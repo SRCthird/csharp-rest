@@ -34,39 +34,47 @@ public class WeatherForecastController : ControllerBase
   [HttpGet]
   public IActionResult Get()
   {
-    var result = _db.Connect()
-      .Query("WeatherForecasts")
-      .Get<WeatherForecast>();
-    return Ok(result);
+    try {
+      var result = _db.Connect()
+        .Query("WeatherForecasts")
+        .Get<WeatherForecast>();
+      return Ok(result);
+    } catch (Exception) {
+      return Ok(new List<WeatherForecast>());
+    }
   }
 
   [HttpGet("{id}")]
   public IActionResult Get(int id)
   {
-    var result = _db.Connect()
-      .Query("WeatherForecasts")
-      .Where("id", id)
-      .FirstOrDefault<WeatherForecast>();
-    if (result == null)
-      return NotFound();
-    return Ok(result);
+    try {
+      var result = _db.Connect()
+        .Query("WeatherForecasts")
+        .Where("id", id)
+        .FirstOrDefault<WeatherForecast>();
+      if (result == null)
+        return NotFound();
+      return Ok(result);
+    } catch (Exception e) {
+      return BadRequest(e.Message);
+    }
   }
 
   [HttpPost]
   public IActionResult Post([FromBody] WeatherForecast forecast)
   {
-    if (forecast.Summary == null)
-    {
-        forecast.Summary = GetWeatherSummary(forecast.TemperatureC);
+    var id = 0;
+    try {
+      id = _db.Connect()
+        .Query("WeatherForecasts")
+        .InsertGetId<int>(new{
+          date = forecast.Date,
+          temperatureC = forecast.TemperatureC,
+          summary = forecast.Summary ?? GetWeatherSummary(forecast.TemperatureC)
+        });
+    } catch (Exception e) {
+      return BadRequest(e.Message);
     }
-
-    var id = _db.Connect()
-      .Query("WeatherForecasts")
-      .InsertGetId<int>(new{
-        date = forecast.Date,
-        temperatureC = forecast.TemperatureC,
-        summary = forecast.Summary
-      });
 
     return Ok(_db.Connect()
       .Query("WeatherForecasts")
@@ -78,9 +86,6 @@ public class WeatherForecastController : ControllerBase
   [HttpPatch("{id}")]
   public IActionResult Patch(int id, [FromBody] WeatherForecastPatch forecast)
   {
-    var db = _db.Connect();
-    var updateQuery = db.Query("WeatherForecasts").Where("id", id);
-
     var updates = new Dictionary<string, object>();
     if (forecast.Date != null)
       updates["date"] = forecast.Date.Value;
@@ -94,10 +99,18 @@ public class WeatherForecastController : ControllerBase
       return BadRequest("No valid fields supplied for update.");
     }
 
-    var affected = updateQuery.Update(updates);
+    try {
+      var affected = _db.Connect()
+        .Query("WeatherForecasts")
+        .Where("id", id)
+        .Update(updates);
 
-    if (affected == 0)
-      return NotFound();
+      if (affected == 0)
+        return NotFound();
+    } catch (Exception e) {
+      return BadRequest(e.Message);
+    };
+
 
     return Ok(_db.Connect()
       .Query("WeatherForecasts")
@@ -117,10 +130,14 @@ public class WeatherForecastController : ControllerBase
     if (result == null)
       return NotFound();
 
-    var affected = _db.Connect()
-      .Query("WeatherForecasts")
-      .Where("id", id)
-      .Delete();
+    try {
+      var affected = _db.Connect()
+        .Query("WeatherForecasts")
+        .Where("id", id)
+        .Delete();
+    } catch (Exception e) {
+      return BadRequest(e.Message);
+    }
 
     return Ok(result);
   }
