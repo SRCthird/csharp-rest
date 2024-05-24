@@ -13,16 +13,16 @@ public class WeatherForecastController : ControllerBase
   private readonly IDatabaseConnection _db;
   private string GetWeatherSummary(int temperatureC)
   {
-      if (temperatureC <= 0) return "Freezing";
-      if (temperatureC <= 5) return "Bracing";
-      if (temperatureC <= 10) return "Chilly";
-      if (temperatureC <= 15) return "Cool";
-      if (temperatureC <= 20) return "Mild";
-      if (temperatureC <= 25) return "Warm";
-      if (temperatureC <= 30) return "Balmy";
-      if (temperatureC <= 35) return "Hot";
-      if (temperatureC <= 40) return "Sweltering";
-      return "Scorching";
+    if (temperatureC <= 0) return "Freezing";
+    if (temperatureC <= 5) return "Bracing";
+    if (temperatureC <= 10) return "Chilly";
+    if (temperatureC <= 15) return "Cool";
+    if (temperatureC <= 20) return "Mild";
+    if (temperatureC <= 25) return "Warm";
+    if (temperatureC <= 30) return "Balmy";
+    if (temperatureC <= 35) return "Hot";
+    if (temperatureC <= 40) return "Sweltering";
+    return "Scorching";
   }
 
   public WeatherForecastController(ILogger<WeatherForecastController> logger, IDatabaseConnection databaseConnection)
@@ -34,12 +34,15 @@ public class WeatherForecastController : ControllerBase
   [HttpGet]
   public IActionResult Get()
   {
-    try {
+    try
+    {
       var result = _db.Connect()
         .Query("WeatherForecasts")
         .Get<WeatherForecast>();
       return Ok(result);
-    } catch (Exception) {
+    }
+    catch (Exception)
+    {
       return Ok(new List<WeatherForecast>());
     }
   }
@@ -47,7 +50,8 @@ public class WeatherForecastController : ControllerBase
   [HttpGet("{id}")]
   public IActionResult Get(int id)
   {
-    try {
+    try
+    {
       var result = _db.Connect()
         .Query("WeatherForecasts")
         .Where("id", id)
@@ -55,7 +59,9 @@ public class WeatherForecastController : ControllerBase
       if (result == null)
         return NotFound();
       return Ok(result);
-    } catch (Exception e) {
+    }
+    catch (Exception e)
+    {
       return BadRequest(e.Message);
     }
   }
@@ -64,15 +70,19 @@ public class WeatherForecastController : ControllerBase
   public IActionResult Post([FromBody] WeatherForecast forecast)
   {
     var id = 0;
-    try {
+    try
+    {
       id = _db.Connect()
         .Query("WeatherForecasts")
-        .InsertGetId<int>(new{
+        .InsertGetId<int>(new
+        {
           date = forecast.Date,
           temperatureC = forecast.TemperatureC,
           summary = forecast.Summary ?? GetWeatherSummary(forecast.TemperatureC)
         });
-    } catch (Exception e) {
+    }
+    catch (Exception e)
+    {
       return BadRequest(e.Message);
     }
 
@@ -89,8 +99,9 @@ public class WeatherForecastController : ControllerBase
     var updates = new Dictionary<string, object>();
     if (forecast.Date != null)
       updates["Date"] = forecast.Date.Value;
-    if (forecast.TemperatureC != null) {
-      if (forecast.Summary == "auto") 
+    if (forecast.TemperatureC != null)
+    {
+      if (forecast.Summary == "auto")
         updates["Summary"] = GetWeatherSummary(forecast.TemperatureC.Value);
       updates["TemperatureC"] = forecast.TemperatureC.Value;
     }
@@ -102,7 +113,8 @@ public class WeatherForecastController : ControllerBase
       return BadRequest("No valid fields supplied for update.");
     }
 
-    try {
+    try
+    {
       var affected = _db.Connect()
         .Query("WeatherForecasts")
         .Where("id", id)
@@ -110,7 +122,9 @@ public class WeatherForecastController : ControllerBase
 
       if (affected == 0)
         return NotFound();
-    } catch (Exception e) {
+    }
+    catch (Exception e)
+    {
       return BadRequest(e.Message);
     };
 
@@ -133,12 +147,15 @@ public class WeatherForecastController : ControllerBase
     if (result == null)
       return NotFound();
 
-    try {
+    try
+    {
       var affected = _db.Connect()
         .Query("WeatherForecasts")
         .Where("id", id)
         .Delete();
-    } catch (Exception e) {
+    }
+    catch (Exception e)
+    {
       return BadRequest(e.Message);
     }
 
