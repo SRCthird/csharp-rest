@@ -18,3 +18,12 @@ public class WeatherForecast
     public string? Summary { get; set; }
 }
 
+public class WeatherForecastPatch
+{
+    public DateTime? Date { get; set; }
+
+    public int? TemperatureC { get; set; }
+
+    public string? Summary { get; set; }
+}
+
