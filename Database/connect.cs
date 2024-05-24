@@ -5,7 +5,12 @@ using dotenv.net;
 
 namespace RESTful.Database
 {
-  public class DatabaseConnection
+  public interface IDatabaseConnection
+  {
+      QueryFactory Connect();
+  }
+
+  public class DatabaseConnection: IDatabaseConnection
   {
     public DatabaseConnection() { }
     public QueryFactory Connect()
@@ -19,3 +24,4 @@ namespace RESTful.Database
     }
   }
 }
+
