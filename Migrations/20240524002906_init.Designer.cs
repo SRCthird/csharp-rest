@@ -10,7 +10,7 @@ namespace RESTful.Migrations
 {
   [DbContext(typeof(WebAppDBContext))]
   [Migration("20240524002906_init")]
-  partial class init
+  partial class Init
   {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)
