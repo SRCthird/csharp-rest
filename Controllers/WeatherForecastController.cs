@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using SqlKata;
+using SqlKata.Execution;
 using RESTful.Models;
+using RESTful.Database;
 
 namespace RESTful.Controllers;
 
@@ -8,6 +10,8 @@ namespace RESTful.Controllers;
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
 {
+  private readonly ILogger<WeatherForecastController> _logger;
+  private readonly IDatabaseConnection _db;
   private string GetWeatherSummary(int temperatureC)
   {
       if (temperatureC <= 0) return "Freezing";
@@ -23,6 +27,11 @@ public class WeatherForecastController : ControllerBase
   }
 
     private readonly ILogger<WeatherForecastController> _logger;
+  public WeatherForecastController(ILogger<WeatherForecastController> logger, IDatabaseConnection databaseConnection)
+  {
+    _logger = logger;
+    _db = databaseConnection;
+  }
 
     public WeatherForecastController(ILogger<WeatherForecastController> logger)
     {
