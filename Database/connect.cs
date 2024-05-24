@@ -7,10 +7,10 @@ namespace RESTful.Database
 {
   public interface IDatabaseConnection
   {
-      QueryFactory Connect();
+    QueryFactory Connect();
   }
 
-  public class DatabaseConnection: IDatabaseConnection
+  public class DatabaseConnection : IDatabaseConnection
   {
     public DatabaseConnection() { }
     public QueryFactory Connect()
