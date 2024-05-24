@@ -14,7 +14,7 @@ namespace RESTful.Database
       var connection = new MySqlConnection(
         System.Environment.GetEnvironmentVariable("DB_CONNECTION")
       );
-      var compiler = new SqlServerCompiler();
+      var compiler = new MySqlCompiler();
       return new QueryFactory(connection, compiler);
     }
   }
