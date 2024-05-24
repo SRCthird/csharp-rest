@@ -88,14 +88,14 @@ public class WeatherForecastController : ControllerBase
   {
     var updates = new Dictionary<string, object>();
     if (forecast.Date != null)
-      updates["date"] = forecast.Date.Value;
+      updates["Date"] = forecast.Date.Value;
     if (forecast.TemperatureC != null) {
       if (forecast.Summary == "auto") 
-        updates["summary"] = GetWeatherSummary(forecast.TemperatureC.Value);
-      updates["temperatureC"] = forecast.TemperatureC.Value;
+        updates["Summary"] = GetWeatherSummary(forecast.TemperatureC.Value);
+      updates["TemperatureC"] = forecast.TemperatureC.Value;
     }
-    if (forecast.Summary != null)
-      updates["summary"] = forecast.Summary;
+    if (forecast.Summary != null && forecast.Summary != "auto")
+      updates["Summary"] = forecast.Summary;
 
     if (updates.Count == 0)
     {
