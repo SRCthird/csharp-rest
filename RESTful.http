@@ -1,6 +1,41 @@
-@RESTful_HostAddress = http://localhost:5089
+@RESTful_HostAddress = http://localhost:5000
 
-GET {{RESTful_HostAddress}}/weatherforecast/
+### Read all weather forecasts
+GET {{RESTful_HostAddress}}/weatherforecast
 Accept: application/json
 
 ###
+
+### Read specific weather forecast by ID
+GET {{RESTful_HostAddress}}/weatherforecast/{{id}}
+Accept: application/json
+
+###
+
+### Create a new weather forecast
+POST {{RESTful_HostAddress}}/weatherforecast
+Content-Type: application/json
+Accept: application/json
+
+{
+    "date": "2024-05-25",
+    "temperatureC": 23,
+    "summary": "Sunny"
+}
+
+###
+
+### Update a weather forecast by ID
+PATCH {{RESTful_HostAddress}}/weatherforecast/{{id}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "temperatureC": 28
+}
+
+###
+
+### Delete a weather item by ID
+DELETE {{RESTful_HostAddress}}/weatherforecast/{{id}}
+Accept: application/json
